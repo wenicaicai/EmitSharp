@@ -1,3 +1,38 @@
-# EmitSharp is nothing but useless
+# EMITSHARP IS USELESS
 
-> UNTIL 2020-01-01
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UNTIL `2020-01-01`
