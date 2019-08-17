@@ -10,7 +10,6 @@ namespace Tests
     public class EmitTest
     {
         private readonly ITestOutputHelper _testOutputHelper;
-
         public EmitTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
@@ -18,6 +17,17 @@ namespace Tests
 
         public void Setup()
         {
+        }
+
+        [Fact]
+        public void EmitConstructorTest()
+        {
+            var pointType = EmitConstructorBuilder.DynamicPointTypeGen();
+            dynamic point = Activator.CreateInstance(pointType, 1, 2, 3);
+            var xField = point.GetX();
+            var yField = point.GetY();
+            var zField = point.GetZ();
+            _testOutputHelper.WriteLine($"xField : {xField}, yField : {yField}, zField : {zField}");
         }
 
 
