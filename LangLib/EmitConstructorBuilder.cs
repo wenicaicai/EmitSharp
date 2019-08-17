@@ -12,7 +12,7 @@ namespace LangLib
         public static Type DynamicPointTypeGen()
         {
             var classTypeBuilder = new ClassTypeBuilder();
-            classTypeBuilder.DefineType("MyDynamicAssembly", "PointModule", "Point");
+            classTypeBuilder.DefineType("MyDynamicAssembly", "PointModule", "Point", Type.EmptyTypes);
             classTypeBuilder.DefineField("x", typeof(int), FieldAttributes.Public);
             classTypeBuilder.DefineField("y", typeof(int), FieldAttributes.Public);
             classTypeBuilder.DefineField("z", typeof(int), FieldAttributes.Public);

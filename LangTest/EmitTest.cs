@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using LangLib;
 using Xunit;
@@ -18,6 +19,28 @@ namespace Tests
         public void Setup()
         {
         }
+
+        [Fact]
+        public void EmitInterfaceImpTest()
+        {
+            var type = InterfaceImplementTypeBuilder.CreateTypeImpIGetString();
+            var instance = Activator.CreateInstance(type);
+            var inf = (IGetString) instance;
+            var result = inf.Get(); 
+            Assert.Equal("Aloha", result);
+        }
+
+
+        [Fact]
+        public void EmitEnumBuilderTest()
+        {
+            var type = EmitEnumBuilder.BuildDynamicEnum();
+            foreach (var value in Enum.GetValues(type))
+            {
+                _testOutputHelper.WriteLine($"{type},{value}={((int)value).ToString()}");
+            }
+        }
+
 
         [Fact]
         public void EmitConstructorTest()

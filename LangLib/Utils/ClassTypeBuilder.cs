@@ -13,12 +13,21 @@ namespace LangLib.Utils
         private ModuleBuilder _moduleBuilder;
         private TypeBuilder _typeBuilder;
         readonly Dictionary<string, FieldBuilder> _fieldBuilders = new Dictionary<string, FieldBuilder>();
-        public ClassTypeBuilder DefineType(string assemblyName, string moduleName, string typeName)
+        readonly Dictionary<string, MethodBuilder> _methodBuilders = new Dictionary<string, MethodBuilder>();
+
+        public ClassTypeBuilder DefineType(string assemblyName, string moduleName, string typeName, Type[] interfaceToImp)
         {
             _assemblyBuilder =
                 AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
             _moduleBuilder = _assemblyBuilder.DefineDynamicModule(moduleName);
             _typeBuilder = _moduleBuilder.DefineType(typeName, TypeAttributes.Public);
+            if (interfaceToImp.Any())
+            {
+                foreach (var iType in interfaceToImp)
+                {
+                    _typeBuilder.AddInterfaceImplementation(iType);
+                }
+            }
             return this;
         }
 
@@ -63,5 +72,18 @@ namespace LangLib.Utils
         {
             return _typeBuilder.CreateType();
         }
+
+        public MethodBuilder DefineMethod(string methodName, Type returnType, MethodAttributes methodAttributes, MethodInfo interfaceToImpMethodInfo)
+        {
+        
+            var methodBdr = _typeBuilder.DefineMethod(methodName, methodAttributes, CallingConventions.Standard, returnType, Type.EmptyTypes);
+            _methodBuilders[methodName] = methodBdr;//SAVE THE METHOD BUILDER
+            if (interfaceToImpMethodInfo != null)
+            {
+                _typeBuilder.DefineMethodOverride(methodBdr, interfaceToImpMethodInfo);
+            }
+            return methodBdr;
+        }
+
     }
 }
