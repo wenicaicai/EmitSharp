@@ -2,85 +2,93 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace LangTest.DynamicTests
 {
     public class DynamicVisitorTest
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public DynamicVisitorTest(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         private interface IVisitable
         {
-            void Accept(IVisitor visitor);
+            string Accept(IVisitor visitor);
         }
 
         private interface IVisitor
         {
-            void Visit(IVisitable visitable);
+            string Visit(IVisitable visitable);
         }
         //Define Two Person Class As IVisitable
         class PersonA : IVisitable
         {
-            public void Accept(IVisitor visitor)
+            public string Accept(IVisitor visitor)
             {
-                visitor.Visit(this);
+                return visitor.Visit(this);
             }
         }
 
         class PersonB : IVisitable
         {
-            public void Accept(IVisitor visitor)
+            public string Accept(IVisitor visitor)
             {
-                visitor.Visit(this);
+                return visitor.Visit(this);
             }
         }
 
 
         private class ToStringVisitor : IVisitor
         {
-            public void Visit(IVisitable visitable)
+            public string Visit(IVisitable visitable)
             {
-                this.Visit((dynamic) visitable);
+                return this.Visit((dynamic)visitable);
             }
 
-            public void Visit(PersonA visitable)
+            public string Visit(PersonA visitable)
             {
-                Console.WriteLine($"{typeof(ToStringVisitor)} Visited {typeof(PersonA)})");
+                return $"{nameof(ToStringVisitor)} Visited {nameof(PersonA)}";
             }
 
-            public void Visit(PersonB visitable)
+            public string Visit(PersonB visitable)
             {
-                Console.WriteLine($"{typeof(ToStringVisitor)} Visited {typeof(PersonB)})");
+                return $"{nameof(ToStringVisitor)} Visited {nameof(PersonB)}";
             }
         }
         private class ToElementPersonVisitor : IVisitor
         {
-            public void Visit(IVisitable visitable)
+            public string Visit(IVisitable visitable)
             {
-                this.Visit((dynamic)visitable);
+                return this.Visit((dynamic)visitable);
             }
 
-            public void Visit(PersonA visitable)
+            public string Visit(PersonA visitable)
             {
-                Console.WriteLine($"{typeof(ToElementPersonVisitor)} Visited {typeof(PersonA)})");
+                return $"{nameof(ToElementPersonVisitor)} Visited {nameof(PersonA)}";
             }
 
-            public void Visit(PersonB visitable)
+            public string Visit(PersonB visitable)
             {
-                Console.WriteLine($"{typeof(ToElementPersonVisitor)} Visited {typeof(PersonB)})");
+                return $"{nameof(ToElementPersonVisitor)} Visited {nameof(PersonB)}";
             }
         }
 
         [Fact]
         public void DynamicVisitorPatternTest()
         {
-            var personA = new PersonA();
-            var personB = new PersonB();
-            
-            var toStrVisitor = new ToStringVisitor();
-            var toElementVisitor = new ToElementPersonVisitor();
-            personA.Accept(toElementVisitor);
-            personA.Accept(toStrVisitor);
-            personB.Accept(toElementVisitor);
-            personB.Accept(toStrVisitor);
+            IVisitable personA = new PersonA();
+            IVisitable personB = new PersonB();
+
+            IVisitor toStrVisitor = new ToStringVisitor();
+            IVisitor toElementVisitor = new ToElementPersonVisitor();
+            _testOutputHelper.WriteLine(personA.Accept(toElementVisitor));
+            _testOutputHelper.WriteLine(personA.Accept(toStrVisitor));
+            _testOutputHelper.WriteLine(personB.Accept(toElementVisitor));
+            _testOutputHelper.WriteLine(personB.Accept(toStrVisitor));
 
         }
 
